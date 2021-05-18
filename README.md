@@ -24,6 +24,11 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 ## Double Faults
 一旦系统出现 **triple fault** ，对于操作系统来说是致命的，因此系统会重新启动。 所以要避免三级错误，一般在二级错误的时候就进行处理。
 
+中断类型
+
+- Switching Stacks
+- [IST & TSS](https://os.phil-opp.com/double-fault-exceptions/#the-ist-and-tss)
+
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)
 [osdev](https://wiki.osdev.org)
