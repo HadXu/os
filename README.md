@@ -33,6 +33,13 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 ### The 8259 PIC
 
+- 键盘输入中断
+- 
+
+## 分页
+
+
+
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)
 [osdev](https://wiki.osdev.org)
