@@ -16,7 +16,10 @@ pub extern "C" fn _start() -> ! {
     println!("Hello World.........{}", "!");
 
     os::init();
-    x86_64::instructions::interrupts::int3();
+    // x86_64::instructions::interrupts::int3();
+    unsafe {
+        *(0xdeadbeef as *mut u64) = 42;
+    };
 
     println!("It did not crash!");
 
