@@ -1,9 +1,10 @@
 #![no_std]
 #![no_main]
 
-mod vga_buffer;
+// mod vga_buffer;
 
 use core::panic::PanicInfo;
+use os::println;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -12,6 +13,12 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    print!("Hello World.........{}", "!");
+    println!("Hello World.........{}", "!");
+
+    os::init();
+    x86_64::instructions::interrupts::int3();
+
+    println!("It did not crash!");
+
     loop {}
 }
