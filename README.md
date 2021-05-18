@@ -29,6 +29,10 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 - Switching Stacks
 - [IST & TSS](https://os.phil-opp.com/double-fault-exceptions/#the-ist-and-tss)
 
+## 硬件中断
+
+### The 8259 PIC
+
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)
 [osdev](https://wiki.osdev.org)
