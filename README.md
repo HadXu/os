@@ -48,6 +48,11 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 一般的x86_64系统采用4级页表，大大提高了性能。目前的64位其实并不是64位，而是48位，还有16位没有用到。
 
+## 分页实现
+
+![](https://os.phil-opp.com/paging-introduction/x86_64-page-table-translation.svg)
+
+
 
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)
