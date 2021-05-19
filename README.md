@@ -38,6 +38,15 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 ## 分页
 
+在x86系统中，```CR3```寄存器存放着页表。很多系统中有一块专门的缓存存放该数据结构。其中页是虚拟内存中的概念，而对应的是frame对应的是实际硬件内存的地址
+
+![](https://os.phil-opp.com/paging-introduction/paging-page-tables.svg)
+
+这样好处就是可以将虚拟内存划分为很多很多page，以此来映射到内存中的区域，而不是浪费内存的空间 如图所示
+
+![](https://os.phil-opp.com/paging-introduction/segmentation-fragmentation.svg)
+
+一般的x86_64系统采用4级页表，大大提高了性能。目前的64位其实并不是64位，而是48位，还有16位没有用到。
 
 
 # 参考
