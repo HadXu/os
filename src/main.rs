@@ -21,6 +21,15 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
+}
+
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello World.........{}", "!");
     os::init();
@@ -53,6 +62,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
         "reference count is {} now",
         Rc::strong_count(&cloned_reference)
     );
+
+
+
 
     // use x86_64::structures::paging::Page;
     // use x86_64::{structures::paging::Translate, VirtAddr};

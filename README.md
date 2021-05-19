@@ -59,7 +59,9 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 在内存中划分出一个区域专门用来堆分配。 同时分配有各种方法
 
-- 
+- Bump Allocator
+- Linked List Allocator
+- Fixed-Size Block Allocator
 
 
 # 参考
