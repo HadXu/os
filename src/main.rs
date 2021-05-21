@@ -10,8 +10,8 @@ use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use os::memory::translate_addr;
 use os::memory::BootInfoFrameAllocator;
+use os::task::{simple_executor::SimpleExecutor, Task};
 use os::{allocator, memory, print, println};
-use os::task::{Task, simple_executor::SimpleExecutor};
 
 use x86_64::{structures::paging::Translate, VirtAddr};
 
@@ -28,7 +28,7 @@ async fn async_number() -> u32 {
 
 async fn example_task() {
     let number = async_number().await;
-    println!("async number: {}", number);
+    println!("async number: {}", number + 100);
 }
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
@@ -67,9 +67,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     //     "reference count is {} now",
     //     Rc::strong_count(&cloned_reference)
     // );
-
-
-
 
     // use x86_64::structures::paging::Page;
     // use x86_64::{structures::paging::Translate, VirtAddr};

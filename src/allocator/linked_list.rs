@@ -15,5 +15,4 @@ impl ListNode {
     fn end_addr(&self) -> usize {
         self.start_addr() + self.size
     }
-    
 }

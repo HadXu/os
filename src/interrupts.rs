@@ -96,7 +96,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
             }
         }
     }
-
+    
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
@@ -115,3 +115,5 @@ extern "x86-interrupt" fn page_fault_handler(
     println!("{:#?}", stack_frame);
     hlt_loop();
 }
+
+
