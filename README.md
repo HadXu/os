@@ -79,3 +79,4 @@ Rust支持Future，Future是一种特殊的数据结构，存放着两种类型�
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)
 [osdev](https://wiki.osdev.org)
+[osblog](https://github.com/sgmarz/osblog)
