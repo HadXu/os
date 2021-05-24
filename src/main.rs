@@ -41,12 +41,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
-    let mut executor = SimpleExecutor::new();
-    executor.spawn(Task::new(example_task()));
-    executor.run();
+    // let mut executor = SimpleExecutor::new();
+    // executor.spawn(Task::new(example_task()));
+    // executor.run();
 
-    // let heap_value = Box::new(41);
-    // println!("heap_value at {:p}", heap_value);
+    let heap_value = Box::new(41);
+    println!("heap_value is {} at {:p}", *heap_value, heap_value);
 
     // let mut vec = Vec::new();
     // for i in 0..500 {

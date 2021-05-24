@@ -69,8 +69,16 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 在内存中划分出一个区域专门用来堆分配。 同时分配有各种方法
 
 - Bump Allocator
+直接开辟大量空间使用，一般不会用，因为非常浪费空间。
 - Linked List Allocator
+用链表来将一个个free空间串起来，以备使用。
+![](https://os.phil-opp.com/allocator-designs/linked-list-allocation.svg)
 - Fixed-Size Block Allocator
+与Linked List Allocator不同的是，该方法是另一种分配策略，根据给定的大小来分配空间，比如分配4byte，给他16byte的块。分配48byte，给他64byte的块。
+![](https://os.phil-opp.com/allocator-designs/fixed-size-block-example.svg)
+
+
+
 
 ## 多线程
 Rust支持Future，Future是一种特殊的数据结构，存放着两种类型已经完成的以及没有完成的。
