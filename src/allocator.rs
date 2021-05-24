@@ -8,11 +8,13 @@ pub mod linked_list;
 
 use bump::BumpAllocator;
 use linked_list::LinkedListAllocator;
+use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]
 // static ALLOCATOR: LockedHeap = LockedHeap::empty();
 // static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
-static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
+// static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
+static ALLOCATOR:Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
 use x86_64::{
     structures::paging::{
