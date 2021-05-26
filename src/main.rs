@@ -12,6 +12,7 @@ use os::memory::translate_addr;
 use os::memory::BootInfoFrameAllocator;
 use os::task::{simple_executor::SimpleExecutor, Task};
 use os::{allocator, memory, print, println};
+use os::cpu;
 
 use x86_64::{structures::paging::Translate, VirtAddr};
 
@@ -41,11 +42,16 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
+    println!("cpu id -> {}", cpu::id());
+
+
+
     // let mut executor = SimpleExecutor::new();
     // executor.spawn(Task::new(example_task()));
     // executor.run();
 
-    let heap_value = Box::new(41);
+    let mut heap_value = Box::new(41);
+    *heap_value = 0;
     println!("heap_value is {} at {:p}", *heap_value, heap_value);
 
     // let mut vec = Vec::new();
