@@ -6,8 +6,8 @@ pub mod bump;
 pub mod fixed_size_block;
 pub mod linked_list;
 
-use bump::BumpAllocator;
-use linked_list::LinkedListAllocator;
+// use bump::BumpAllocator;
+// use linked_list::LinkedListAllocator;
 use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]

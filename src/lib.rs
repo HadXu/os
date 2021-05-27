@@ -12,6 +12,7 @@ pub mod memory;
 pub mod task;
 pub mod vga_buffer;
 pub mod cpu;
+pub mod process;
 
 pub fn init() {
     gdt::init();
