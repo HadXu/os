@@ -1,5 +1,6 @@
 use crate::{gdt, print, println};
 use lazy_static::lazy_static;
+use spin::Mutex;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
 use pic8259::ChainedPics;
@@ -8,7 +9,28 @@ use spin;
 use crate::hlt_loop;
 use x86_64::structures::idt::PageFaultErrorCode;
 
+fn interrupt_index(irq: u8) -> u8 {
+    PIC_1_OFFSET + irq
+}
+
+fn default_handler() {
+    return;
+}
+
+macro_rules! irq_handler {
+    ($handler:ident, $irq:expr) => {
+        pub extern "x86-interrupt" fn $handler(_stack_frame: InterruptStackFrame) {
+            let handlers = IRQ_HANDLERS.lock();
+            handlers[$irq]();
+            unsafe { PICS.lock().notify_end_of_interrupt(interrupt_index($irq)); }
+        }
+    };
+}
+
+irq_handler!(irq0_handler, 0);
+
 lazy_static! {
+    pub static ref IRQ_HANDLERS: Mutex<[fn(); 16]> = Mutex::new([default_handler; 16]);
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
@@ -17,10 +39,9 @@ lazy_static! {
                 .set_handler_fn(double_fault_handler)
                 .set_stack_index(gdt::DOUBLE_FAULT_IST_INDEX);
         }
-        idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
-        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
-
-        idt.page_fault.set_handler_fn(page_fault_handler);
+        idt[InterruptIndex::Timer.as_usize()].set_handler_fn(irq0_handler);
+        // idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+        // idt.page_fault.set_handler_fn(page_fault_handler);
 
         idt
     };
@@ -66,8 +87,7 @@ impl InterruptIndex {
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    // print!(".");
-
+    print!(".");
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
