@@ -11,6 +11,13 @@
 
 ## Todo
 
+0. [Programmable Interval Timer (PIT)](https://wiki.osdev.org/Programmable_Interval_Timer)
+通过端口来读取实际的时钟时间，然后进入到计算机的软时钟，开始工作。
+[时钟中断](https://blog.csdn.net/wrx1721267632/article/details/50527595)
+[CMOS](https://wiki.osdev.org/CMOS)
+[C++ memory order](https://www.zhihu.com/question/24301047)
+
+
 1. 线程
 2. shell
 3. 文件系统

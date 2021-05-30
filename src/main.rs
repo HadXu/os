@@ -11,7 +11,7 @@ use core::panic::PanicInfo;
 use os::memory::translate_addr;
 use os::memory::BootInfoFrameAllocator;
 use os::task::{simple_executor::SimpleExecutor, Task};
-use os::{allocator, memory, print, println};
+use os::{allocator, memory, print, println, shell, cmos};
 
 use x86_64::{structures::paging::Translate, VirtAddr};
 
@@ -33,7 +33,12 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
-    loop {
 
+    let mut t = cmos::CMOS::new();
+    let time = t.rtc();
+    println!("{} {} {} {} {}", time.year, time.month, time.day, time.hour, time.minute);
+    
+    loop {
+        // shell::main();
     }
 }

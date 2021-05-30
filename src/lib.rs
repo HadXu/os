@@ -13,12 +13,18 @@ pub mod task;
 pub mod vga_buffer;
 pub mod cpu;
 pub mod process;
+pub mod cmos;
+pub mod time;
+
+
+pub mod shell;
 
 pub fn init() {
     gdt::init();
     interrupts::init_idt();
     unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
+
 
     cpu::init();
 }
