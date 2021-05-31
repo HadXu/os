@@ -1,4 +1,6 @@
 use core::sync::atomic::{AtomicUsize, AtomicU64, Ordering};
+use x86_64::instructions::interrupts;
+use x86_64::instructions::port::Port;
 
 const PIT_FREQUENCY: f64 = 3_579_545.0 / 3.0;
 const PIT_DIVIDER: usize = 1193;
@@ -32,6 +34,19 @@ fn rdtsc() -> u64 {
     }
 }
 
+fn set_pit_frequency_divider(divider: u16) {
+    interrupts::without_interrupts(|| {
+        let bytes = divider.to_le_bytes();
+        let mut cmd: Port<u8> = Port::new(0x43);
+        let mut data: Port<u8> = Port::new(0x40);
+        unsafe {
+            cmd.write(0x36);
+            data.write(bytes[0]);
+            data.write(bytes[1]);
+        }
+    });
+}
+
 // pub fn sleep(seconds: f64) {
 //     let start = kernel::clock::uptime();
 //     while kernel::clock::uptime() - start < seconds {
@@ -39,5 +54,7 @@ fn rdtsc() -> u64 {
 //     }
 // }
 pub fn init() {
-
+    let divider = if PIT_DIVIDER < 65536 { PIT_DIVIDER } else { 0 };
+    set_pit_frequency_divider(divider as u16);
+    
 }

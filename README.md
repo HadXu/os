@@ -12,12 +12,6 @@
 ## Todo
 
 0. [Programmable Interval Timer (PIT)](https://wiki.osdev.org/Programmable_Interval_Timer)
-通过端口来读取实际的时钟时间，然后进入到计算机的软时钟，开始工作。
-[时钟中断](https://blog.csdn.net/wrx1721267632/article/details/50527595)
-[CMOS](https://wiki.osdev.org/CMOS)
-[C++ memory order](https://www.zhihu.com/question/24301047)
-
-
 1. 线程
 2. shell
 3. 文件系统
@@ -96,6 +90,74 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 ## 多线程
 Rust支持Future，Future是一种特殊的数据结构，存放着两种类型已经完成的以及没有完成的。
+
+
+
+## 时间中断
+[Programmable Interval Timer (PIT)](https://wiki.osdev.org/Programmable_Interval_Timer)
+通过端口来读取实际的时钟时间，然后进入到计算机的软时钟，开始工作。具体的端口是CMOS (and the Real-Time Clock) can only be accessed through IO Ports 0x70 and 0x71. 直接使用x86_64来去读就行
+```rust
+impl CMOS {
+    pub fn new() -> Self {
+        CMOS {
+            addr: Port::new(0x70),
+            data: Port::new(0x71),
+        }
+    }
+
+    pub fn rtc(&mut self) -> RTC {
+        while self.is_updating() {
+            x86_64::instructions::hlt();
+        }
+
+        let mut second = self.read_register(Register::Second);
+        let mut minute = self.read_register(Register::Minute);
+        let mut hour = self.read_register(Register::Hour);
+        let mut day = self.read_register(Register::Day);
+        let mut month = self.read_register(Register::Month);
+        let mut year = self.read_register(Register::Year) as u16;
+
+        let b = self.read_register(Register::B);
+        
+        if b & 0x04 == 0 { // BCD Mode
+            second = (second & 0x0F) + ((second / 16) * 10);
+            minute = (minute & 0x0F) + ((minute / 16) * 10);
+            hour = ((hour & 0x0F) + (((hour & 0x70) / 16) * 10)) | (hour & 0x80);
+            day = (day & 0x0F) + ((day / 16) * 10);
+            month = (month & 0x0F) + ((month / 16) * 10);
+            year = (year & 0x0F) + ((year / 16) * 10);
+        }
+
+        if (b & 0x02 == 0) && (hour & 0x80 == 0) { // 12 hour format
+            hour = ((hour & 0x7F) + 12) % 24;
+        }
+
+        year += 2000;
+        RTC { year, month, day, hour, minute, second }
+    }
+
+    fn is_updating(&mut self) -> bool {
+        unsafe {
+            self.addr.write(0x0A as u8);
+            (self.data.read() & 0x80 as u8) == 1
+        }
+    }
+
+    fn read_register(&mut self, reg: Register) -> u8 {
+        unsafe {
+            self.addr.write(reg as u8);
+            self.data.read()
+        }
+    }
+}
+```
+
+
+
+[时钟中断](https://blog.csdn.net/wrx1721267632/article/details/50527595)
+[CMOS](https://wiki.osdev.org/CMOS)
+[C++ memory order](https://www.zhihu.com/question/24301047)
+
 
 
 # 参考

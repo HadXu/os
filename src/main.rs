@@ -5,15 +5,10 @@
 
 extern crate alloc;
 
-use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use os::memory::translate_addr;
-use os::memory::BootInfoFrameAllocator;
-use os::task::{simple_executor::SimpleExecutor, Task};
-use os::{allocator, memory, print, println, shell, cmos};
 
-use x86_64::{structures::paging::Translate, VirtAddr};
+use os::{println, kernel};
 
 entry_point!(kernel_main);
 
@@ -25,20 +20,13 @@ fn panic(_info: &PanicInfo) -> ! {
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello World.........{}", "!");
-    os::init();
+    os::init(boot_info);
 
-    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let mut mapper = unsafe { memory::init(phys_mem_offset) };
-    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
-
-    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
-
-
-    let mut t = cmos::CMOS::new();
+    let mut t = kernel::cmos::CMOS::new();
     let time = t.rtc();
     println!("{} {} {} {} {}", time.year, time.month, time.day, time.hour, time.minute);
     
     loop {
-        // shell::main();
+       
     }
 }

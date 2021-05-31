@@ -4,29 +4,19 @@
 #![feature(const_mut_refs)]
 
 extern crate alloc;
+use bootloader::BootInfo;
 
-pub mod allocator;
-pub mod gdt;
-pub mod interrupts;
-pub mod memory;
-pub mod task;
-pub mod vga_buffer;
-pub mod cpu;
-pub mod process;
-pub mod cmos;
-pub mod time;
+pub mod kernel;
+pub mod user;
 
-
-pub mod shell;
-
-pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
-    unsafe { interrupts::PICS.lock().initialize() };
+pub fn init(boot_info: &'static BootInfo) {
+    kernel::gdt::init();
+    kernel::interrupts::init_idt();
+    unsafe { kernel::interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
 
-
-    cpu::init();
+    kernel::cpu::init();
+    kernel::memory::init(boot_info);
 }
 
 pub fn hlt_loop() -> ! {

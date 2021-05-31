@@ -1,11 +1,17 @@
-use crate::println;
-use bootloader::bootinfo::MemoryMap;
-use bootloader::bootinfo::MemoryRegionType;
+use crate::{println, kernel};
+use bootloader::bootinfo::{BootInfo, MemoryMap, MemoryRegionType};
 use x86_64::structures::paging::OffsetPageTable;
 use x86_64::structures::paging::{FrameAllocator, PhysFrame, Size4KiB};
 use x86_64::{structures::paging::PageTable, PhysAddr, VirtAddr};
 
-pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static> {
+pub fn init(boot_info: &'static BootInfo) {
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mut mapper = unsafe { mapper(phys_mem_offset) };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
+    kernel::allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
+}
+
+pub unsafe fn mapper(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static> {
     let level_4_table = active_level_4_table(physical_memory_offset);
     OffsetPageTable::new(level_4_table, physical_memory_offset)
 }
