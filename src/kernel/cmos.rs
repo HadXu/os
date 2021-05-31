@@ -1,4 +1,3 @@
-use x86_64::instructions::interrupts;
 use x86_64::instructions::port::Port;
 
 #[repr(u8)]
@@ -13,7 +12,6 @@ enum Register {
     B = 0x0B,
     C = 0x0C,
 }
-
 
 #[repr(u8)]
 enum Interrupt {
@@ -37,7 +35,6 @@ pub struct CMOS {
     data: Port<u8>,
 }
 
-
 impl CMOS {
     pub fn new() -> Self {
         CMOS {
@@ -59,8 +56,9 @@ impl CMOS {
         let mut year = self.read_register(Register::Year) as u16;
 
         let b = self.read_register(Register::B);
-        
-        if b & 0x04 == 0 { // BCD Mode
+
+        if b & 0x04 == 0 {
+            // BCD Mode
             second = (second & 0x0F) + ((second / 16) * 10);
             minute = (minute & 0x0F) + ((minute / 16) * 10);
             hour = ((hour & 0x0F) + (((hour & 0x70) / 16) * 10)) | (hour & 0x80);
@@ -69,12 +67,20 @@ impl CMOS {
             year = (year & 0x0F) + ((year / 16) * 10);
         }
 
-        if (b & 0x02 == 0) && (hour & 0x80 == 0) { // 12 hour format
+        if (b & 0x02 == 0) && (hour & 0x80 == 0) {
+            // 12 hour format
             hour = ((hour & 0x7F) + 12) % 24;
         }
 
         year += 2000;
-        RTC { year, month, day, hour, minute, second }
+        RTC {
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+        }
     }
 
     fn is_updating(&mut self) -> bool {
@@ -90,8 +96,11 @@ impl CMOS {
             self.data.read()
         }
     }
+
+    pub fn notify_end_of_interrupt(&mut self) {
+        unsafe {
+            self.addr.write(Register::C as u8);
+            self.data.read();
+        }
+    }
 }
-
-
-
-

@@ -1,6 +1,6 @@
 use alloc::alloc::Layout;
-use core::ptr;
 use core::mem;
+use core::ptr;
 use ptr::NonNull;
 
 use super::Locked;

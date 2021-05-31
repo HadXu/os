@@ -89,13 +89,13 @@ CPU运行过程中有很多错误，这个时候需要处理错误就这需要�
 
 
 ## 多线程
-Rust支持Future，Future是一种特殊的数据结构，存放着两种类型已经完成的以及没有完成的。
+Rust支持Future，Future是一种特殊的数据结构，存放着两种类型(已经完成的以及没有完成的)。
 
 
 
 ## 时间中断
 [Programmable Interval Timer (PIT)](https://wiki.osdev.org/Programmable_Interval_Timer)
-通过端口来读取实际的时钟时间，然后进入到计算机的软时钟，开始工作。具体的端口是CMOS (and the Real-Time Clock) can only be accessed through IO Ports 0x70 and 0x71. 直接使用x86_64来去读就行
+通过端口来读取实际的时钟时间，然后进入到计算机的软时钟，开始工作。具体的端口是CMOS (and the Real-Time Clock) can only be accessed through IO Ports 0x70 and 0x71. 直接使用x86_64来去读就行。
 ```rust
 impl CMOS {
     pub fn new() -> Self {
@@ -151,13 +151,12 @@ impl CMOS {
     }
 }
 ```
-
-
-
 [时钟中断](https://blog.csdn.net/wrx1721267632/article/details/50527595)
 [CMOS](https://wiki.osdev.org/CMOS)
 [C++ memory order](https://www.zhihu.com/question/24301047)
-
+[C++20 memory](https://en.cppreference.com/w/cpp/atomic/memory_order).
+[PIC](https://wiki.osdev.org/8259_PIC)
+有两个中断结构，具体参考[IBM PC 8259 PIC 架构](https://wiki.osdev.org/8259_PIC).
 
 
 # 参考

@@ -2,6 +2,8 @@ use crate::{kernel, println};
 use lazy_static::lazy_static;
 use spin::Mutex;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
+use x86_64::instructions::interrupts;
+use x86_64::instructions::port::Port;
 
 use pic8259::ChainedPics;
 use spin;
@@ -19,7 +21,9 @@ macro_rules! irq_handler {
         pub extern "x86-interrupt" fn $handler(_stack_frame: InterruptStackFrame) {
             let handlers = IRQ_HANDLERS.lock();
             handlers[$irq]();
-            unsafe { PICS.lock().notify_end_of_interrupt(interrupt_index($irq)); }
+            unsafe {
+                PICS.lock().notify_end_of_interrupt(interrupt_index($irq));
+            }
         }
     };
 }
@@ -40,7 +44,6 @@ irq_handler!(irq12_handler, 12);
 irq_handler!(irq13_handler, 13);
 irq_handler!(irq14_handler, 14);
 irq_handler!(irq15_handler, 15);
-
 
 lazy_static! {
     pub static ref IRQ_HANDLERS: Mutex<[fn(); 16]> = Mutex::new([default_handler; 16]);
@@ -88,8 +91,35 @@ extern "x86-interrupt" fn double_fault_handler(
     panic!();
 }
 
+pub const PIC1: u16 = 0x21;
+pub const PIC2: u16 = 0xA1;
+
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
 pub static PICS: spin::Mutex<ChainedPics> =
     spin::Mutex::new(unsafe { ChainedPics::new(PIC_1_OFFSET, PIC_2_OFFSET) });
+
+pub fn set_irq_handler(irq: u8, handler: fn()) {
+    interrupts::without_interrupts(|| {
+        let mut handlers = IRQ_HANDLERS.lock();
+        handlers[irq as usize] = handler;
+        clear_irq_mask(irq);
+    });
+}
+
+pub fn set_irq_mask(irq: u8) {
+    let mut port: Port<u8> = Port::new(if irq < 8 { PIC1 } else { PIC2 });
+    unsafe {
+        let value = port.read() | (1 << (if irq < 8 { irq } else { irq - 8 }));
+        port.write(value);
+    }
+}
+
+pub fn clear_irq_mask(irq: u8) {
+    let mut port: Port<u8> = Port::new(if irq < 8 { PIC1 } else { PIC2 });
+    unsafe {
+        let value = port.read() & !(1 << if irq < 8 { irq } else { irq - 8 });
+        port.write(value);
+    }
+}

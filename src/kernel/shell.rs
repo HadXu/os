@@ -18,13 +18,9 @@ impl Shell {
     pub fn run(&mut self) {
         print!("\n");
         print!("{}", self.prompt);
-        loop {
-
-        }
+        loop {}
     }
-
 }
-
 
 pub fn main() {
     let mut shell = Shell::new();

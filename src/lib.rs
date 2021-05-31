@@ -15,6 +15,8 @@ pub fn init(boot_info: &'static BootInfo) {
     unsafe { kernel::interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
 
+    kernel::time::init();
+    kernel::keyboard::init();
     kernel::cpu::init();
     kernel::memory::init(boot_info);
 }

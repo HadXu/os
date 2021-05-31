@@ -10,7 +10,6 @@ lazy_static! {
     pub static ref PROCESS: Mutex<Process> = Mutex::new(Process::new("/", None)); // TODO
 }
 
-
 pub struct Process {
     id: usize,
     env: BTreeMap<String, String>,
@@ -27,6 +26,3 @@ impl Process {
         Self { id, env, dir, user }
     }
 }
-
-
-
