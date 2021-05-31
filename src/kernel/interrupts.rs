@@ -1,9 +1,9 @@
 use crate::{kernel, println};
 use lazy_static::lazy_static;
 use spin::Mutex;
-use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use x86_64::instructions::interrupts;
 use x86_64::instructions::port::Port;
+use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
 use pic8259::ChainedPics;
 use spin;

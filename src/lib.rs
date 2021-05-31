@@ -19,6 +19,10 @@ pub fn init(boot_info: &'static BootInfo) {
     kernel::keyboard::init();
     kernel::cpu::init();
     kernel::memory::init(boot_info);
+    kernel::pci::init(); // todo
+    kernel::net::init(); //todo
+    kernel::ata::init();
+    // kernel::fs::init();
 }
 
 pub fn hlt_loop() -> ! {
