@@ -20,13 +20,5 @@ fn panic(_info: &PanicInfo) -> ! {
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello World.........{}", "!");
     os::init(boot_info);
-
-    let mut t = kernel::cmos::CMOS::new();
-    let time = t.rtc();
-    println!(
-        "{} {} {} {} {}",
-        time.year, time.month, time.day, time.hour, time.minute
-    );
-
     loop {}
 }

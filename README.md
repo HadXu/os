@@ -162,6 +162,7 @@ impl CMOS {
 在Qemu中支持硬件需要一些参数，具体参考[bootimage](https://github.com/rust-osdev/bootimage), 但是需要注意的是在参数传递的时候这样```run-args = ["-nic", "model=rtl8139"]```, 而不能直接添加为一个命令。可以添加的硬件在这里[pci bus](https://www.linux-kvm.org/page/Hotadd_pci_devices)
 
 ## [ATA](https://wiki.osdev.org/ATA_PIO_Mode)
+ATA磁盘驱动器开发。
 
 
 # 参考

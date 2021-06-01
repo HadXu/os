@@ -1,5 +1,6 @@
 use crate::kernel;
 use crate::kernel::cmos::CMOS;
+use core::hint::spin_loop;
 use core::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use x86_64::instructions::interrupts;
 use x86_64::instructions::port::Port;
@@ -32,6 +33,14 @@ fn rdtsc() -> u64 {
     unsafe {
         core::arch::x86_64::_mm_lfence();
         core::arch::x86_64::_rdtsc()
+    }
+}
+
+pub fn nanowait(nanoseconds: u64) {
+    let start = rdtsc();
+    let delta = nanoseconds * CLOCKS_PER_NANOSECOND.load(Ordering::Relaxed);
+    while rdtsc() - start < delta {
+        spin_loop();
     }
 }
 
