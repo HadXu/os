@@ -52,7 +52,8 @@ pub struct Bus {
 impl Bus {
     pub fn new(id: u8, io_base: u16, ctrl_base: u16, irq: u8) -> Self {
         Self {
-            id, irq,
+            id,
+            irq,
 
             data_register: Port::new(io_base + 0),
             error_register: PortReadOnly::new(io_base + 1),
@@ -81,8 +82,11 @@ impl Bus {
     }
 
     fn wait(&mut self) {
-        for _ in 0..4 { // Wait about 4 x 100 ns
-            unsafe { self.alternate_status_register.read(); }
+        for _ in 0..4 {
+            // Wait about 4 x 100 ns
+            unsafe {
+                self.alternate_status_register.read();
+            }
         }
     }
 
@@ -116,7 +120,8 @@ impl Bus {
         self.wait();
         let start = kernel::clock::uptime();
         while self.is_busy() {
-            if kernel::clock::uptime() - start > 1.0 { // Hanged
+            if kernel::clock::uptime() - start > 1.0 {
+                // Hanged
                 return self.reset();
             }
 
@@ -148,7 +153,8 @@ impl Bus {
     fn setup(&mut self, drive: u8, block: u32) {
         let drive_id = 0xE0 | (drive << 4);
         unsafe {
-            self.drive_register.write(drive_id | ((block.get_bits(24..28) as u8) & 0x0F));
+            self.drive_register
+                .write(drive_id | ((block.get_bits(24..28) as u8) & 0x0F));
             self.sector_count_register.write(1);
             self.lba0_register.write(block.get_bits(0..8) as u8);
             self.lba1_register.write(block.get_bits(8..16) as u8);
@@ -247,7 +253,10 @@ pub fn init() {
     }
 
     for (bus, drive, model, serial, size, unit) in list() {
-        println!("ATA {}:{} {} {} ({} {})\n", bus, drive, model, serial, size, unit);
+        println!(
+            "ATA {}:{} {} {} ({} {})\n",
+            bus, drive, model, serial, size, unit
+        );
     }
 }
 

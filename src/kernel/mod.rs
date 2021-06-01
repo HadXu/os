@@ -3,6 +3,7 @@ pub mod ata;
 pub mod clock;
 pub mod cmos;
 pub mod cpu;
+pub mod fs;
 pub mod gdt;
 pub mod interrupts;
 pub mod keyboard;

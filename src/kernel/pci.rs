@@ -114,7 +114,10 @@ fn check_device(bus: u8, device: u8) {
 fn add_device(bus: u8, device: u8, function: u8) {
     let config = DeviceConfig::new(bus, device, function);
     PCI_DEVICES.lock().push(config);
-    println!("PCI {:04}:{:02}:{:02} [{:04X}:{:04X}]\n", bus, device, function, config.vendor_id, config.device_id);
+    println!(
+        "PCI {:04}:{:02}:{:02} [{:04X}:{:04X}]\n",
+        bus, device, function, config.vendor_id, config.device_id
+    );
 }
 
 fn get_vendor_id(bus: u8, device: u8, function: u8) -> u16 {
@@ -143,10 +146,11 @@ impl ConfigRegister {
         Self {
             data_port: Port::new(0xCFC),
             addr_port: Port::new(0xCF8),
-            addr: 0x8000_0000 | ((bus as u32) << 16)
-                              | ((device as u32) << 11)
-                              | ((function as u32) << 8)
-                              | ((offset as u32) & 0xFC),
+            addr: 0x8000_0000
+                | ((bus as u32) << 16)
+                | ((device as u32) << 11)
+                | ((function as u32) << 8)
+                | ((offset as u32) & 0xFC),
         }
     }
 

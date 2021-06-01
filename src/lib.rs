@@ -22,7 +22,7 @@ pub fn init(boot_info: &'static BootInfo) {
     kernel::pci::init(); // todo
     kernel::net::init(); //todo
     kernel::ata::init();
-    // kernel::fs::init();
+    kernel::fs::init();
 }
 
 pub fn hlt_loop() -> ! {
