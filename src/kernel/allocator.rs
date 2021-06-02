@@ -14,7 +14,7 @@ use fixed_size_block::FixedSizeBlockAllocator;
 // static ALLOCATOR: LockedHeap = LockedHeap::empty();
 // static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
 // static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
-static ALLOCATOR:Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
+static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
 use x86_64::{
     structures::paging::{
@@ -56,11 +56,11 @@ pub fn init_heap(
 pub struct Dummy;
 
 unsafe impl GlobalAlloc for Dummy {
-    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+    unsafe fn alloc(&self, _: Layout) -> *mut u8 {
         null_mut()
     }
 
-    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+    unsafe fn dealloc(&self, _: *mut u8, _: Layout) {
         println!("dealloc should be never called");
         panic!();
     }

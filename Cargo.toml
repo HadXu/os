@@ -15,6 +15,8 @@ pic8259 = "0.10.1"
 pc-keyboard = "0.5.0"
 linked_list_allocator = "0.9.0"
 raw-cpuid = "8.0"
+bit_field = "0.10.0"
+smoltcp = { version = "0.6.0", default-features = false, features = ["alloc", "ethernet", "socket-tcp", "socket-udp", "proto-ipv4", "proto-dhcpv4"] }
 
 [dependencies.lazy_static]
 version = "1.0"
@@ -37,3 +39,6 @@ panic = "abort"
 
 [target.'cfg(target_os = "macos")']
 rustflags = ["-C", "link-args=-e __start -static -nostartfiles"]
+
+[package.metadata.bootimage]
+run-args = ["-nic", "model=rtl8139", "-hdb", "disk.img"]

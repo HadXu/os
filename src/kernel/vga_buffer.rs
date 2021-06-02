@@ -127,7 +127,7 @@ impl fmt::Write for Writer {
 
 #[macro_export]
 macro_rules! print {
-    ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)));
+    ($($arg:tt)*) => ($crate::kernel::vga_buffer::_print(format_args!($($arg)*)));
 }
 
 #[macro_export]
@@ -143,4 +143,11 @@ pub fn _print(args: fmt::Arguments) {
     interrupts::without_interrupts(|| {
         WRITER.lock().write_fmt(args).unwrap();
     });
+}
+
+pub fn is_printable(c: u8) -> bool {
+    match c {
+        0x20..=0x7E | 0x08 | 0x0A | 0x0D => true,
+        _ => false,
+    }
 }
