@@ -8,7 +8,7 @@ extern crate alloc;
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 
-use os::{kernel, println};
+use os::{kernel, println, user};
 
 entry_point!(kernel_main);
 
@@ -20,5 +20,7 @@ fn panic(_info: &PanicInfo) -> ! {
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello World.........{}", "!");
     os::init(boot_info);
-    loop {}
+    loop {
+        user::shell::main();
+    }
 }

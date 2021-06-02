@@ -40,7 +40,6 @@ pub fn mount(bus: u8, dsk: u8) {
     *BLOCK_DEVICE.lock() = Some(block_device);
 }
 
-
 pub fn format(bus: u8, dsk: u8) {
     // Write superblock
     let mut buf = MAGIC.as_bytes().to_vec();
@@ -51,17 +50,4 @@ pub fn format(bus: u8, dsk: u8) {
     mount(bus, dsk);
 }
 
-pub fn init() {
-    for bus in 0..2 {
-        for dsk in 0..2 {
-            let mut buf = [0u8; 512];
-            kernel::ata::read(bus, dsk, SUPERBLOCK_ADDR, &mut buf);
-            if let Ok(header) = String::from_utf8(buf[0..8].to_vec()) {
-                if header == MAGIC {
-                    println!("MFS Superblock found in ATA {}:{}\n", bus, dsk);
-                    mount(bus, dsk);
-                }
-            }
-        }
-    }
-}
+pub fn init() {}

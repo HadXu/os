@@ -164,6 +164,10 @@ impl CMOS {
 ## [ATA](https://wiki.osdev.org/ATA_PIO_Mode)
 ATA磁盘驱动器开发。
 
+## File-System
+
+## Shell
+最激动人心的地方到了，就是shell，实现一个shell可不简单，涉及到打印，控制台开发，文件，系统调用等等。
 
 # 参考
 [Writing an OS in Rust](https://os.phil-opp.com)

@@ -1,4 +1,4 @@
-use crate::{kernel, println};
+use crate::{kernel, print};
 use lazy_static::lazy_static;
 use pc_keyboard::{layouts, DecodedKey, HandleControl, KeyCode, Keyboard, ScancodeSet1};
 use spin::Mutex;
@@ -34,8 +34,8 @@ pub fn interrupt_handler() {
                     return;
                 }
             };
-            // kernel::console::key_handle(c);
-            println!("{}", c);
+            kernel::console::key_handle(c);
+            // print!("{}", c);
         }
     }
 }

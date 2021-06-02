@@ -144,3 +144,10 @@ pub fn _print(args: fmt::Arguments) {
         WRITER.lock().write_fmt(args).unwrap();
     });
 }
+
+pub fn is_printable(c: u8) -> bool {
+    match c {
+        0x20..=0x7E | 0x08 | 0x0A | 0x0D => true,
+        _ => false,
+    }
+}
