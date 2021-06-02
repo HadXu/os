@@ -73,10 +73,8 @@ pub fn get_char() -> char {
                 Some(c) => {
                     stdin.clear();
                     Some(c)
-                },
-                _ => {
-                    None
                 }
+                _ => None,
             }
         });
 

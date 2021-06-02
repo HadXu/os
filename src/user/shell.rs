@@ -1,4 +1,4 @@
-use crate::{kernel, print, user, println};
+use crate::{kernel, print, println, user};
 use alloc::format;
 use alloc::string::String;
 use alloc::vec;
@@ -33,17 +33,16 @@ impl Shell {
         loop {
             let c = kernel::console::get_char();
             match c {
-                '\n' => { 
+                '\n' => {
                     print!("\n");
                     if self.cmd.len() > 0 {
                         let line = self.cmd.clone();
-                        println!("{}", line);
+                        self.exec(&line);
                         self.cmd.clear();
                     }
 
-
                     print!("{}", self.prompt);
-                },
+                }
 
                 c => {
                     if c.is_ascii() && kernel::vga_buffer::is_printable(c as u8) {
@@ -51,6 +50,17 @@ impl Shell {
                         print!("{}", c);
                     }
                 }
+            }
+        }
+    }
+
+    pub fn exec(&self, cmd: &str) {
+        match cmd {
+            "date" => {
+                user::date::main();
+            }
+            _ => {
+                println!("{}", "Unknown");
             }
         }
     }
