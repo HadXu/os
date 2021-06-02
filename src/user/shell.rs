@@ -55,14 +55,24 @@ impl Shell {
     }
 
     pub fn exec(&self, cmd: &str) {
-        match cmd {
+        let args = self.parse(cmd);
+
+        match args[0] {
             "date" => {
                 user::date::main();
-            }
+            },
+            "sleep" => {
+                user::sleep::main(&args);
+            },
             _ => {
                 println!("{}", "Unknown");
             }
         }
+    }
+
+    fn parse<'a>(&self, cmd: &'a str) -> Vec<&'a str> {
+        let args: Vec<&str> = cmd.split_whitespace().collect();
+        args
     }
 }
 
