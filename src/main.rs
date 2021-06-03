@@ -19,8 +19,8 @@ fn panic(_info: &PanicInfo) -> ! {
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello World.........{}", "!");
-    os::init(boot_info);
+    // os::init(boot_info);
     loop {
-        user::shell::main();
+        // user::shell::main();
     }
 }
