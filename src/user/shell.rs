@@ -1,7 +1,5 @@
 use crate::{kernel, print, println, user};
-use alloc::format;
 use alloc::string::String;
-use alloc::vec;
 use alloc::vec::Vec;
 
 pub struct Shell {
@@ -9,9 +7,6 @@ pub struct Shell {
     prompt: String,
     history: Vec<String>,
     history_index: usize,
-    autocomplete: Vec<String>,
-    autocomplete_index: usize,
-    errored: bool,
 }
 
 impl Shell {
@@ -21,9 +16,6 @@ impl Shell {
             prompt: String::from("> "),
             history: Vec::new(),
             history_index: 0,
-            autocomplete: Vec::new(),
-            autocomplete_index: 0,
-            errored: false,
         }
     }
 
@@ -37,13 +29,25 @@ impl Shell {
                     print!("\n");
                     if self.cmd.len() > 0 {
                         let line = self.cmd.clone();
+                        self.history.push(line.clone());
+                        self.history_index = self.history.len();
                         self.exec(&line);
                         self.cmd.clear();
                     }
-
                     print!("{}", self.prompt);
                 }
-
+                '↑' => {
+                    if self.history.len() > 0 {
+                        if self.history_index > 0 {
+                            self.history_index -= 1;
+                        }
+                        let cmd = &self.history[self.history_index];
+                        print!("{}", cmd);
+                    }
+                },
+                '↓' => {
+                    print!("down");
+                }, 
                 c => {
                     if c.is_ascii() && kernel::vga_buffer::is_printable(c as u8) {
                         self.cmd.push(c);
@@ -63,6 +67,9 @@ impl Shell {
             },
             "sleep" => {
                 user::sleep::main(&args);
+            },
+            "uptime" => {
+                user::uptime::main();
             },
             _ => {
                 println!("{}", "Unknown");

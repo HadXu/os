@@ -44,10 +44,11 @@ pub fn format(bus: u8, dsk: u8) {
     // Write superblock
     let mut buf = MAGIC.as_bytes().to_vec();
     buf.resize(512, 0);
-    println!("{}", buf[0]);
     let block_device = BlockDevice::new(bus, dsk);
     block_device.write(SUPERBLOCK_ADDR, &buf);
     mount(bus, dsk);
 }
 
-pub fn init() {}
+pub fn init() {
+    
+}
