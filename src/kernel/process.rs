@@ -26,3 +26,39 @@ impl Process {
         Self { id, env, dir, user }
     }
 }
+
+pub fn id() -> usize {
+    PROCESS.lock().id
+}
+
+pub fn env(key: &str) -> Option<String> {
+    match PROCESS.lock().env.get(key.into()) {
+        Some(val) => Some(val.clone()),
+        None => None,
+    }
+}
+
+pub fn envs() -> BTreeMap<String, String> {
+    PROCESS.lock().env.clone()
+}
+
+pub fn dir() -> String {
+    PROCESS.lock().dir.clone()
+}
+
+pub fn user() -> Option<String> {
+    PROCESS.lock().user.clone()
+}
+
+pub fn set_env(key: &str, val: &str) {
+    PROCESS.lock().env.insert(key.into(), val.into());
+}
+
+pub fn set_dir(dir: &str) {
+    PROCESS.lock().dir = dir.into();
+}
+
+pub fn set_user(user: &str) {
+    PROCESS.lock().user = Some(user.into())
+}
+
