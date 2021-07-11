@@ -1,6 +1,13 @@
 use crate::{kernel, println};
 use x86_64::instructions::port::Port;
+use alloc::collections::BTreeMap;
 use smoltcp::wire::{EthernetAddress, IpCidr, Ipv4Address};
+use smoltcp::iface::{EthernetInterfaceBuilder, NeighborCache, Routes};
+use smoltcp::phy;
+use smoltcp::phy::{Device, DeviceCapabilities};
+use smoltcp::time::Instant;
+use smoltcp::Result;
+
 #[derive(Clone)]
 pub struct Ports {
     pub mac: [Port<u8>; 6]
@@ -55,6 +62,7 @@ impl RTL8139 {
 }
 
 pub fn init() {
+    // The PCI vendor ID is 0x10EC and the device ID is 0x8139.
     if let Some(mut pci_device) = kernel::pci::find_device(0x10EC, 0x8139) {
         pci_device.enable_bus_mastering();
         let io_base = (pci_device.base_addresses[0] as u16) & 0xFFF0;
@@ -62,6 +70,9 @@ pub fn init() {
         net_device.init();
         if let Some(eth_addr) = net_device.eth_addr {
             println!("Addr: {}", eth_addr);
+
+            let neighbor_cache = NeighborCache::new(BTreeMap::new());
+
         }
     }
 }
